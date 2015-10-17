@@ -45,13 +45,17 @@ describe('karma-browserify', function() {
   it('should not double bundle on test file change', function(done) {
 
     var runCount = 0;
+    var hasTouched = false;
     runner.on('run_start', function() {
       runCount++;
     });
 
     // touch file to trigger additional run
     runner.once('run_complete', function() {
-      touch('test/integration/test/externalSpec.js');
+      if (!hasTouched) {
+        touch('test/integration/test/externalSpec.js');
+        hasTouched = true;
+      }
 
       runner.stopAfter(4000);
     });
